@@ -1,0 +1,8 @@
+{
+    "ItpStakingV1": {
+      "initialOwner": "",
+      "token": "",
+      "lockTimeDuration": 300,
+      "initialRewardsRatePerLockMultiplierBps": [1500, 2000, 2500, 3000]
+    }
+}
