@@ -139,7 +139,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
         rewardsRatePerLockMultiplierBpsLength = initialRewardsRatePerLockMultiplierBps
             .length;
         maxLockDuration =
-            initialRewardsRatePerLockMultiplierBps.length *
+            rewardsRatePerLockMultiplierBpsLength *
             lockDuration;
     }
 
@@ -263,9 +263,10 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
      * @param tokenIds Array of token IDs to be withdrawn.
      */
     function withdraw(uint256[] memory tokenIds) external nonReentrant {
+        uint256 length = tokenIds.length;
         uint256 totalAmount;
 
-        for (uint256 i = 0; i < tokenIds.length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             uint256 tokenId = tokenIds[i];
 
             _validateUserTokenId(msg.sender, tokenId);
@@ -547,21 +548,23 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     function _validateRewardsRatePerLockMultiplierBps(
         uint256[] memory _rewardsRatePerLockMultiplierBps
     ) private view {
+        uint256 inputLength = _rewardsRatePerLockMultiplierBps.length;
+
         // Once rewardsRatePerLockMultiplierBpsLength is set in constructor, subsequent bps updates must match the same length
         if (
-            (_rewardsRatePerLockMultiplierBps.length == 0 ||
-                _rewardsRatePerLockMultiplierBps.length >
+            (inputLength == 0 ||
+                inputLength >
                 MAX_LOCK_MULTIPLIER) ||
             (rewardsRatePerLockMultiplierBpsLength != 0 &&
-                _rewardsRatePerLockMultiplierBps.length !=
+                inputLength !=
                 rewardsRatePerLockMultiplierBpsLength)
         ) {
             revert InvalidRewardsRatePerLockMultiplierBpsLength(
-                _rewardsRatePerLockMultiplierBps.length
+                inputLength
             );
         }
 
-        for (uint256 i = 0; i < _rewardsRatePerLockMultiplierBps.length; i++) {
+        for (uint256 i = 0; i < inputLength; i++) {
             // Bps must be in ascending order
             if (
                 i != 0 &&
@@ -610,7 +613,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     function _validateLockMultiplier(uint256 lockMultiplier) private view {
         if (
             lockMultiplier < 1 ||
-            lockMultiplier > rewardsRatePerLockMultiplierBps.length
+            lockMultiplier > rewardsRatePerLockMultiplierBpsLength
         ) {
             revert InvalidLockMultiplier(lockMultiplier);
         }
