@@ -500,8 +500,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     /**
      * @dev Calculates the rewards for a given amount and lock multiplier.
      * @param amount Amount of tokens.
-     * @param lockMultiplier Lock multiplier.
-     * @notice lockMultiplier - 1 must be in rewardsRatePerLockMultiplierBps bounds
+     * @param lockMultiplier Lock multiplier, lockMultiplier - 1 must be in rewardsRatePerLockMultiplierBps bounds
      * @return Calculated rewards.
      */
     function _calculateRewards(
