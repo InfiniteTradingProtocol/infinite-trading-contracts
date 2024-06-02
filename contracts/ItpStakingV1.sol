@@ -138,9 +138,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
         rewardsRatePerLockMultiplierBps = initialRewardsRatePerLockMultiplierBps;
         rewardsRatePerLockMultiplierBpsLength = initialRewardsRatePerLockMultiplierBps
             .length;
-        maxLockDuration =
-            rewardsRatePerLockMultiplierBpsLength *
-            lockDuration;
+        maxLockDuration = rewardsRatePerLockMultiplierBpsLength * lockDuration;
     }
 
     /**
@@ -483,15 +481,11 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
         uint256 unlockTime,
         uint256 currentTime
     ) private view returns (uint256) {
-        if (currentTime >= unlockTime) {
-            return 0;
-        }
-
-        if (lockTime >= unlockTime) {
-            return 0;
-        }
-
-        if (penaltyRateBps == 0) {
+        if (
+            (currentTime >= unlockTime) ||
+            (lockTime >= unlockTime) ||
+            (penaltyRateBps == 0)
+        ) {
             return 0;
         }
 
@@ -552,16 +546,11 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
 
         // Once rewardsRatePerLockMultiplierBpsLength is set in constructor, subsequent bps updates must match the same length
         if (
-            (inputLength == 0 ||
-                inputLength >
-                MAX_LOCK_MULTIPLIER) ||
+            (inputLength == 0 || inputLength > MAX_LOCK_MULTIPLIER) ||
             (rewardsRatePerLockMultiplierBpsLength != 0 &&
-                inputLength !=
-                rewardsRatePerLockMultiplierBpsLength)
+                inputLength != rewardsRatePerLockMultiplierBpsLength)
         ) {
-            revert InvalidRewardsRatePerLockMultiplierBpsLength(
-                inputLength
-            );
+            revert InvalidRewardsRatePerLockMultiplierBpsLength(inputLength);
         }
 
         for (uint256 i = 0; i < inputLength; i++) {
