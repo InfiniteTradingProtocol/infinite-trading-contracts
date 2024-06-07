@@ -14,22 +14,22 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
 
     // Events
     event Deposit(
-        address caller,
+        address indexed caller,
         uint256 tokenId,
         uint256 amount,
         uint256 rewards,
         uint256 lockTime,
         uint256 unlockTime
     );
-    event Withdraw(address caller, uint256[] tokenIds, uint256 amount);
+    event Withdraw(address indexed caller, uint256[] tokenIds, uint256 amount);
     event EarlyWithdraw(
-        address caller,
+        address indexed caller,
         uint256 tokenId,
         uint256 amount,
         uint256 penaltyAmount
     );
     event ExtendLock(
-        address caller,
+        address indexed caller,
         uint256 tokenId,
         uint256 amount,
         uint256 rewards,
@@ -37,31 +37,35 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
         uint256 unlockTime
     );
     event DepositRewards(
-        address caller,
+        address indexed caller,
         uint256 amount,
         uint256 totalRewards,
         uint256 rewardsLeft
     );
     event WithdrawRewards(
-        address caller,
+        address indexed caller,
         uint256 amount,
         uint256 totalRewards,
         uint256 rewardsLeft
     );
-    event WithdrawPenalty(address caller, uint256 amount, uint256 totalPenalty);
+    event WithdrawPenalty(
+        address indexed caller,
+        uint256 amount,
+        uint256 totalPenalty
+    );
     event SetRewardsRatePerLockMultiplierBps(
-        address caller,
+        address indexed caller,
         uint256[] rewardsRatePerLockMultiplierBps
     );
-    event SetPenaltyRateBps(address caller, uint256 bps);
+    event SetPenaltyRateBps(address indexed caller, uint256 bps);
     event BurnPenalty(
-        address caller,
+        address indexed caller,
         uint256 amount,
         uint256 totalPenalty,
         uint256 totalBurned
     );
     event ConvertPenaltyIntoRewards(
-        address caller,
+        address indexed caller,
         uint256 amount,
         uint256 totalPenalty,
         uint256 rewardsLeft
