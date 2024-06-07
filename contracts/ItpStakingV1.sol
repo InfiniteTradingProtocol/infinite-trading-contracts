@@ -78,6 +78,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     error InvalidRewardsRatePerLockMultiplierBpsLength(uint256 length);
     error InvalidRewardsRatePerLockMultiplierBpsOrder(uint256[] rewardsBps);
     error InvalidLockDuration(uint256 maxDuration, uint256 duration);
+    error InvalidTokenIdsLength(uint256 maxStakesLength);
 
     // Storage
 
@@ -262,6 +263,8 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
      */
     function withdraw(uint256[] memory tokenIds) external nonReentrant {
         uint256 length = tokenIds.length;
+        _validateWithdrawLength(length);
+
         uint256 totalAmount;
 
         for (uint256 i = 0; i < length; i++) {
@@ -529,6 +532,12 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     function _validateAmount(uint256 amount) private pure {
         if (amount == 0) {
             revert InvalidAmount(amount);
+        }
+    }
+
+    function _validateWithdrawLength(uint256 length) private pure {
+        if (length == 0) {
+            revert InvalidTokenIdsLength(0);
         }
     }
 

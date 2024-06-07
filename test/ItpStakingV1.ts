@@ -126,7 +126,6 @@ describe("ItpStakingV1", function () {
           "InvalidLockMultiplier"
         ),
       ]);
-
     });
   });
 
@@ -153,6 +152,13 @@ describe("ItpStakingV1", function () {
         expect(totalStakedAfterWithdraw).to.equal(0),
         expect(rewardsLeftAfterWithdraw).equal(expectedRewardsLeft),
       ]);
+    });
+    it("Should attemp to withdraw with and array of length 0 and revert with InvalidTokenIdsLength", async function () {
+      const { token, stakingVault, owner, otherAccount } = await loadFixture(deployFixture); 
+        await expect(stakingVault.connect(otherAccount).withdraw([])).to.be.revertedWithCustomError(
+          stakingVault,
+          "InvalidTokenIdsLength"
+        );
     });
   });
 
