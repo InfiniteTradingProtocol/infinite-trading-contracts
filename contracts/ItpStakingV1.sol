@@ -153,7 +153,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @dev Returns the total staked balance (including rewards) of a user.
+     * @notice Returns the total staked balance (including rewards) of a user.
      * @param account Address of the user.
      * @return Total staked balance (including rewards) of the user.
      */
@@ -170,7 +170,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @dev Returns the staking information of a user.
+     * @notice Returns the staking information of a user.
      * @param account Address of the user.
      * @return stakeInfo Array of StakeInfo representing the user's stakes.
      */
@@ -187,7 +187,14 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @dev Returns the vault information.
+     * @notice Retrieves various details about the vault.
+     * @return _totalStaked The total amount of tokens staked (including rewards) in the vault.
+     * @return _totalRewards The total amount of rewards allocated to the vault.
+     * @return _totalRewardsLeft The total amount of rewards left to be distributed.
+     * @return _totalPenalty The total amount of penalties collected by the vault.
+     * @return _totalPenaltyBurned The total amount of penalties that have been burned.
+     * @return _rewardsRatePerLockMultiplierBps An array of reward rates per lock multiplier in basis points (bps).
+     * @return _penaltyRateBps The penalty rate in basis points (bps).
      */
     function getVaultInfo()
         external
@@ -212,7 +219,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @dev Returns the rewards rate per lock multiplier in basis points.
+     * @notice Returns the rewards rate per lock multiplier in basis points.
      * @return Array of rewards rate per lock multiplier in basis points.
      */
     function getRewardsRatePerLockMultiplierBps()
@@ -224,7 +231,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @dev Allows a user to deposit tokens and stake them for rewards.
+     * @notice Allows a user to deposit tokens and stake them for rewards.
      * @param amount Amount of tokens to be deposited.
      * @param lockMultiplier Multiplier for the lock duration.
      */
@@ -268,7 +275,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @dev Allows a user to withdraw their staked tokens after the lock period.
+     * @notice Allows a user to withdraw their staked tokens after the lock period.
      * @param tokenIds Array of token IDs to be withdrawn.
      */
     function withdraw(uint256[] memory tokenIds) external nonReentrant {
@@ -296,7 +303,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @dev Allows early withdrawal of staked tokens with a penalty.
+     * @notice Allows early withdrawal of staked tokens with a penalty.
      * @param tokenId Token ID to be withdrawn early.
      */
     function earlyWithdraw(uint256 tokenId) external nonReentrant {
@@ -331,7 +338,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @dev Extends the lock period of a staked token and adds additional rewards.
+     * @notice Extends the lock period of a staked token and adds additional rewards.
      * @param tokenId Token ID to be extended.
      * @param lockMultiplier New lock multiplier.
      */
@@ -376,6 +383,10 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
 
     // onlyOwner
 
+    /**
+     * @notice Deposits reward tokens into the contract.
+     * @param amount The amount of tokens to deposit.
+     */
     function depositRewards(uint256 amount) external nonReentrant onlyOwner {
         _validateAmount(amount);
 
@@ -386,6 +397,10 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
         emit DepositRewards(msg.sender, amount, totalRewards, rewardsLeft);
     }
 
+    /**
+     * @notice Withdraws reward tokens from the contract.
+     * @param amount The amount of tokens to withdraw.
+     */
     function withdrawRewards(uint256 amount) external nonReentrant onlyOwner {
         _validateAmount(amount);
         _validateRewards(amount);
@@ -397,6 +412,10 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
         emit WithdrawRewards(msg.sender, amount, totalRewards, rewardsLeft);
     }
 
+    /**
+     * @notice Withdraws penalty tokens from the contract.
+     * @param amount The amount of tokens to withdraw.
+     */
     function withdrawPenalty(uint256 amount) external nonReentrant onlyOwner {
         _validateAmount(amount);
         _validatePenalty(amount);
@@ -407,6 +426,10 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
         emit WithdrawPenalty(msg.sender, amount, totalPenalty);
     }
 
+    /**
+     * @notice Sets the rewards rate per lock multiplier basis points.
+     * @param _rewardsRatePerLockMultiplierBps An array of new rewards rate per lock multiplier basis points.
+     */
     function setRewardsRatePerLockMultiplierBps(
         uint256[] memory _rewardsRatePerLockMultiplierBps
     ) external onlyOwner {
@@ -422,6 +445,10 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
         );
     }
 
+    /**
+     * @notice Sets the penalty rate in basis points.
+     * @param bps The new penalty rate in basis points.
+     */
     function setPenaltyRateBps(uint256 bps) external onlyOwner {
         _validatePenaltyRateBps(bps);
 
@@ -430,6 +457,10 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
         emit SetPenaltyRateBps(msg.sender, penaltyRateBps);
     }
 
+    /**
+     * @notice Burns the specified amount of penalty tokens.
+     * @param amount The amount of tokens to burn.
+     */
     function burnPenalty(uint256 amount) external nonReentrant onlyOwner {
         _validateAmount(amount);
         _validatePenalty(amount);
@@ -443,8 +474,8 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @dev Converts penalties collected from early withdrawals into rewards.
-     * @param amount Amount of penalties to be converted into rewards.
+     * @notice Converts penalties collected from early withdrawals into rewards.
+     * @param amount The amount of penalties to convert into rewards.
      */
     function convertPenaltyIntoRewards(uint256 amount) external onlyOwner {
         _validateAmount(amount);
