@@ -21,10 +21,16 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
         uint256 lockTime,
         uint256 unlockTime
     );
-    event Withdraw(address caller, uint256 amount);
-    event EarlyWithdraw(address caller, uint256 amount, uint256 penaltyAmount);
+    event Withdraw(address caller, uint256[] tokenIds, uint256 amount);
+    event EarlyWithdraw(
+        address caller,
+        uint256 tokenId,
+        uint256 amount,
+        uint256 penaltyAmount
+    );
     event ExtendLock(
         address caller,
+        uint256 tokenId,
         uint256 amount,
         uint256 rewards,
         uint256 lockTime,
@@ -282,7 +288,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
         totalStaked -= totalAmount;
         stakedToken.safeTransfer(msg.sender, totalAmount);
 
-        emit Withdraw(msg.sender, totalAmount);
+        emit Withdraw(msg.sender, tokenIds, totalAmount);
     }
 
     /**
@@ -312,7 +318,12 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
 
         stakedToken.safeTransfer(msg.sender, totalAmountToWithdraw);
 
-        emit EarlyWithdraw(msg.sender, totalAmountToWithdraw, penaltyAmount);
+        emit EarlyWithdraw(
+            msg.sender,
+            tokenId,
+            totalAmountToWithdraw,
+            penaltyAmount
+        );
     }
 
     /**
@@ -351,6 +362,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
 
         emit ExtendLock(
             msg.sender,
+            tokenId,
             amount,
             rewardAmountToPay,
             _stakeInfo[tokenId].lockTime,
@@ -359,6 +371,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
     }
 
     // onlyOwner
+
     function depositRewards(uint256 amount) external nonReentrant onlyOwner {
         _validateAmount(amount);
 
