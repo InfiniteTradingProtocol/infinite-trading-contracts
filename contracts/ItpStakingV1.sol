@@ -511,8 +511,7 @@ contract ItpStakingV1 is Ownable, ReentrancyGuard {
 
         uint256 numerator = unlockTime - currentTime;
         uint256 denominator = unlockTime - lockTime;
-        uint256 unlockTimeDelta = (numerator * 10000) / denominator;
-        uint256 penalty = (penaltyRateBps * unlockTimeDelta) / 10000;
+        uint256 penalty = (penaltyRateBps * numerator) / denominator;
 
         return (amount * penalty) / 10000;
     }
