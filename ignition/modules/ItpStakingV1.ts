@@ -7,8 +7,7 @@ const ItpStakingV1 = buildModule("ItpStakingV1", (m) => {
     const initialRewardsRatePerLockMultiplierBps = m.getParameter("initialRewardsRatePerLockMultiplierBps");
 
     const iptStakingV1 = m.contract("ItpStakingV1",
-        [initialOwner, token, lockTimeDuration, initialRewardsRatePerLockMultiplierBps],
-        { from: "" },
+        [initialOwner, token, lockTimeDuration, initialRewardsRatePerLockMultiplierBps]
     );
 
     return { iptStakingV1 };
